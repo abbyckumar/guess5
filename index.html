@@ -133,6 +133,18 @@
         const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / 86400000);
         const questionIndex = dayOfYear % questionBank.length;
         prompt = questionBank[questionIndex];
+        
+// Prepare canonical answer list and alias map
+canonicalAnswers = prompt.answers.map(a => a.canonical.toLowerCase());
+
+allAnswerMap = {};
+prompt.answers.forEach(a => {
+  const canon = a.canonical.toLowerCase();
+  allAnswerMap[canon] = canon;
+  a.aliases.forEach(alias => {
+    allAnswerMap[alias.toLowerCase()] = canon;
+  });
+});
         document.getElementById("question").innerText = prompt.question;
         initGame();
       });
@@ -190,7 +202,9 @@
 
           guessCount++;
 
-          const index = prompt.answers.findIndex(a => a.toLowerCase() === guess.toLowerCase());
+const guessKey = guess.toLowerCase();
+const normalized = allAnswerMap[guessKey];
+const index = canonicalAnswers.indexOf(normalized);
           const result = document.createElement("p");
           result.className = 'result-item';
           if (index !== -1 && !correctGuesses[index]) {
