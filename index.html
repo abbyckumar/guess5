@@ -251,12 +251,15 @@ window.renderTopFive = function(guesses, showMissing = false) {
   for (let i = 0; i < 5; i++) {
     const num = document.createElement("div");
     num.textContent = `#${i + 1}`;
-    
+
     const ans = document.createElement("div");
-    if (guesses[i]) {
-      ans.textContent = guesses[i];
+    const userAnswer = guesses[i];
+    const correctAnswer = prompt.answers[i].canonical || prompt.answers[i];
+
+    if (userAnswer) {
+      ans.textContent = userAnswer;
     } else if (showMissing) {
-      ans.textContent = prompt.answers[i].canonical || prompt.answers[i];  // support alias/canonical
+      ans.textContent = correctAnswer;
       ans.style.color = "red";
       ans.style.fontWeight = "bold";
     } else {
