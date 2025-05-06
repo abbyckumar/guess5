@@ -234,6 +234,8 @@ const index = canonicalAnswers.indexOf(normalized);
           if (completed) {
             streak++;
             localStorage.setItem("guess5Streak", streak);
+            const streakEnd = document.getElementById("streakEnd");
+            if (streakEnd) streakEnd.innerText = streak;
             launchConfetti();
           } else {
             streak = 0;
