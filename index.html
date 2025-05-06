@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GUESS 5 - Daily Top 5 Quiz</title>
+  <title>Guess 5 - Daily Top 5 Quiz</title>
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -16,11 +16,6 @@
     h1 {
       text-align: center;
       font-size: 2.5rem;
-      color: #333;
-    }
-    h2 {
-      text-align: center;
-      font-size: 1.5rem;
       color: #333;
     }
     #question {
@@ -107,8 +102,8 @@
   </style>
 </head>
 <body>
-  <h1>GUESS 5</h1>
-  <h2>Daily Top 5 Quiz</h2>
+  <h1>Guess 5</h1>
+  <h2 style="text-align:center; font-weight:normal; margin-top:-10px;">Daily Top 5 Quiz</h2>
   <p id="question"></p>
   <div class="guess-box" id="guessBox">
     <input type="text" id="guessInput" placeholder="Your guess..." />
@@ -121,7 +116,7 @@
   <div id="nextGame">
     <p>✅ You've played today's game. Come back tomorrow!</p>
     <p>Next game in: <span id="countdown"></span></p>
-    <button onclick="shareResult()">Get Your Friends to Play!</button>
+    <button onclick="shareResult()">Share Your Score</button>
   </div>
 
   <script>
@@ -134,10 +129,10 @@
       .then(res => res.json())
       .then(bank => {
         questionBank = bank;
-        const today = new Date();
-        const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / 86400000);
-        const questionIndex = dayOfYear % questionBank.length;
-        prompt = questionBank[questionIndex];
+        const lastIndex = parseInt(localStorage.getItem("guess5LastIndex")) || 0;
+        const newIndex = (lastIndex + 1) % questionBank.length;
+        localStorage.setItem("guess5LastIndex", newIndex);
+        prompt = questionBank[newIndex];
         document.getElementById("question").innerText = prompt.question;
         initGame();
       });
@@ -154,12 +149,18 @@
       let timer;
 
       if (storedDate === today) {
+        const alreadyPlayed = sessionStorage.getItem("guess5AlreadyShown");
+        if (!alreadyPlayed) {
+          document.getElementById("nextGame").insertAdjacentHTML('afterbegin', '<p><strong>👋 You’ve already played today!</strong></p>');
+          sessionStorage.setItem("guess5AlreadyShown", "true");
+        }
         renderTopFive(correctGuesses);
         document.getElementById("guessBox").style.display = 'none';
         document.getElementById('topFiveGrid').style.display = 'grid';
         document.getElementById('results').style.display = 'none';
         document.querySelector('.timer').style.display = 'none';
         document.getElementById("nextGame").style.display = "block";
+        document.getElementById("nextGame").insertAdjacentHTML('afterbegin', '<p>👋 You’ve already played today!</p>');
       } else {
         document.querySelector('.guess-box').style.display = 'flex';
         document.getElementById('topFiveGrid').style.display = 'grid';
