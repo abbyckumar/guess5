@@ -115,6 +115,9 @@
     <button onclick="submitGuess()">Submit</button>
   </div>
   <p class="timer">Time Left: <span id="timer">--</span></p>
+<div id="hintButton" style="display:none; text-align:center; margin-top: 10px;">
+  <button onclick="useHint()" style="padding:8px 12px; font-size:1rem; background-color: #ff9800; color: white; border: none; border-radius: 5px; cursor: pointer;">Reveal Hints</button>
+</div>
   <div class="top-five" id="topFiveGrid"></div>
   <div class="results" id="results"></div>
   <p class="streak">Streak: <span id="streak">0</span></p>
@@ -130,6 +133,7 @@
     let startTime, endTime;
     let guessCount = 0;
     let revealFirstLetterHints = [false, false, false, false, false];
+let hintUsed = false;
 
     fetch('questions.json')
       .then(res => res.json())
@@ -202,10 +206,8 @@ prompt.answers.forEach(a => {
               document.getElementById("timer").innerText = timeLeft + "s";
 
 if (timeLeft === 30) {
-  for (let i = 0; i < 5; i++) {
-    if (!correctGuesses[i]) {
-      revealFirstLetterHints[i] = true;
-    }
+  document.getElementById("hintButton").style.display = "block";
+}
   }
   renderTopFive(correctGuesses);
 }
@@ -248,6 +250,7 @@ const index = canonicalAnswers.indexOf(normalized);
           localStorage.setItem("guess5Guesses", JSON.stringify(correctGuesses));
           localStorage.setItem("guess5Date", today);
           if (completed) {
+          if (!hintUsed) {
             streak++;
             localStorage.setItem("guess5Streak", streak);
             const streakEnd = document.getElementById("streakEnd");
@@ -341,6 +344,18 @@ window.renderTopFive = function(guesses, showMissing = false, revealFirstLetter 
         alert("Result copied to clipboard! Share it with friends!");
       }
     }
-  </script>
+  function useHint() {
+  hintUsed = true;
+  document.getElementById("hintButton").style.display = "none";
+  for (let i = 0; i < 5; i++) {
+    if (!correctGuesses[i]) {
+      revealFirstLetterHints[i] = true;
+    }
+  }
+  renderTopFive(correctGuesses);
+}
+</script>
 </body>
 </html>
+
+
