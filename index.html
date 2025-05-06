@@ -268,10 +268,12 @@ window.renderTopFive = function(guesses, showMissing = false, revealFirstLetter 
       ans.style.color = "red";
       ans.style.fontWeight = "bold";
     } else if (revealFirstLetter) {
-      ans.textContent = correctAnswer.charAt(0) + ' _ _ _';
-      ans.style.color = "#888";
-      ans.style.fontStyle = "italic";
-    } else {
+  const correctAnswer = prompt.answers[i].canonical || prompt.answers[i];
+  ans.textContent = correctAnswer.charAt(0) + ' _ _ _';
+  ans.style.color = "#888";
+  ans.style.fontStyle = "italic";
+    } 
+    else {
       ans.textContent = "_____";
     }
 
