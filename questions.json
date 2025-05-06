@@ -5,7 +5,7 @@
     "answers": [
       { "canonical": "India", "aliases": [] },
       { "canonical": "China", "aliases": [] },
-      { "canonical": "USA", "aliases": ["United States", "America", "U.S.A."] },
+      { "canonical": "USA", "aliases": ["United States", "America", "U.S.A.","United States of America"] },
       { "canonical": "Indonesia", "aliases": [] },
       { "canonical": "Pakistan", "aliases": [] }
     ]
