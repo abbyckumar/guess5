@@ -153,7 +153,7 @@ prompt.answers.forEach(a => {
       const today = new Date().toDateString();
       const storedDate = localStorage.getItem("guess5Date");
       let streak = parseInt(localStorage.getItem("guess5Streak") || "0");
-      document.getElementById("streak").innerText = streak;
+      document.querySelectorAll("#streak").forEach(el => el.innerText = streak);
       const streakEnd = document.getElementById("streakEnd");
       if (streakEnd) streakEnd.innerText = streak;
 
