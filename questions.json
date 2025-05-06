@@ -1,0 +1,14 @@
+[
+  {
+    "question": "Top 5 most populated countries",
+    "answers": ["China", "India", "USA", "Indonesia", "Pakistan"]
+  },
+  {
+    "question": "Top 5 tallest buildings",
+    "answers": ["Burj Khalifa", "Shanghai Tower", "Abraj Al-Bait", "Ping An", "Lotte World Tower"]
+  },
+  {
+    "question": "Top 5 longest rivers",
+    "answers": ["Nile", "Amazon", "Yangtze", "Mississippi", "Yenisei"]
+  }
+]
