@@ -132,8 +132,8 @@
         const today = new Date();
         const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / 86400000);
         const questionIndex = dayOfYear % questionBank.length;
-        prompt = questionBank[questionIndex];
-        
+prompt = questionBank[questionIndex];
+
 // Prepare canonical answer list and alias map
 canonicalAnswers = prompt.answers.map(a => a.canonical.toLowerCase());
 
