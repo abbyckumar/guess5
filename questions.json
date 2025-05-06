@@ -3,27 +3,12 @@
   {
     "question": "Top 5 most populated countries",
     "answers": [
-      {
-        "canonical": "USA",
-        "aliases": ["United States", "America", "U.S.A."]
-      },
-      {
-        "canonical": "China",
-        "aliases": []
-      },
-      {
-        "canonical": "India",
-        "aliases": []
-      },
-      {
-        "canonical": "Indonesia",
-        "aliases": []
-      },
-      {
-        "canonical": "Pakistan",
-        "aliases": []
-      }
-  
+      { "canonical": "China", "aliases": [] },
+      { "canonical": "India", "aliases": [] },
+      { "canonical": "USA", "aliases": ["United States", "America", "U.S.A."] },
+      { "canonical": "Indonesia", "aliases": [] },
+      { "canonical": "Pakistan", "aliases": [] }
+    ]
   },
   {
     "question": "Top 5 tallest buildings",
