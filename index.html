@@ -149,13 +149,16 @@
       let timer;
 
       if (storedDate === today) {
-        renderTopFive(correctGuesses);
-        document.getElementById("guessBox").style.display = 'none';
-        document.getElementById('topFiveGrid').style.display = 'grid';
-        document.getElementById('results').style.display = 'none';
-        document.querySelector('.timer').style.display = 'none';
-        document.getElementById("nextGame").style.display = "block";
-        document.getElementById("nextGame").insertAdjacentHTML('afterbegin', '<p>👋 You’ve played today!</p>');
+      document.getElementById("guessBox").style.display = 'none';
+      document.getElementById('topFiveGrid').style.display = 'none';
+      document.getElementById('results').style.display = 'none';
+      document.querySelector('.timer').style.display = 'none';
+      document.getElementById("nextGame").style.display = "block";
+      document.getElementById("nextGame").innerHTML = `
+  <h3 style="font-weight:normal; text-align:center;">👋 You've already played today's game.</h3>
+  <p style="text-align:center; font-size:1.1rem; margin-top:10px;">New Game in: <span id="countdown"></span></p>
+  <p class="streak" style="margin-top: 30px; font-weight: bold;">🔥 Your Streak: <span id="streak">${localStorage.getItem("guess5Streak") || 0}</span></p>
+`;
       } else {
         document.querySelector('.guess-box').style.display = 'flex';
         document.getElementById('topFiveGrid').style.display = 'grid';
