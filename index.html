@@ -173,7 +173,7 @@ prompt.answers.forEach(a => {
       document.getElementById("nextGame").innerHTML = `
   <h3 style="font-weight:normal; text-align:center;">👋 You've already played today's game.</h3>
   <p style="text-align:center; font-size:1.1rem; margin-top:10px;">New Game in: <span id="countdown"></span></p>
-  <p class="streak" style="margin-top: 30px; font-weight: bold;">🔥 Your Streak: <span id="streak">${localStorage.getItem("guess5Streak") || 0}</span></p>
+  <p class="streak" style="margin-top: 30px; font-weight: bold;">🔥 Your Streak: <span id="streakEnd">${streak}</span></p>
 `;
       } else {
         document.querySelector('.guess-box').style.display = 'flex';
