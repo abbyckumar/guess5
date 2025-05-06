@@ -301,6 +301,7 @@ const index = canonicalAnswers.indexOf(normalized);
 window.renderTopFive = function(guesses, showMissing = false, revealFirstLetter = false) {
   const grid = document.getElementById("topFiveGrid");
   grid.innerHTML = "";
+
   for (let i = 0; i < 5; i++) {
     const num = document.createElement("div");
     num.textContent = `#${i + 1}`;
@@ -326,7 +327,7 @@ window.renderTopFive = function(guesses, showMissing = false, revealFirstLetter 
     grid.appendChild(num);
     grid.appendChild(ans);
   }
-}
+};
       }
     }
 
@@ -387,15 +388,10 @@ window.renderTopFive = function(guesses, showMissing = false, revealFirstLetter 
     }
   }
   renderTopFive(correctGuesses);
-}
+
   }
   renderTopFive(correctGuesses);
 }
-</script>
-</body>
-</html>
-
-
 </script>
 </body>
 </html>
