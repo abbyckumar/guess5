@@ -194,13 +194,18 @@ prompt.answers.forEach(a => {
             timer = setInterval(() => {
               timeLeft--;
               document.getElementById("timer").innerText = timeLeft + "s";
-              if (timeLeft <= 0) {
-                clearInterval(timer);
-                renderTopFive(correctGuesses, true);
-                endGame(false);
-              }
-            }, 1000);
+
+          if (timeLeft === 30) {
+            renderTopFive(correctGuesses, false, true); // show hints
+           }
+
+          if (timeLeft <= 0) {
+           clearInterval(timer);
+           renderTopFive(correctGuesses, true); // show full answers
+           endGame(false);
           }
+        }, 1000);
+      }
 
           guessCount++;
 
@@ -245,7 +250,7 @@ const index = canonicalAnswers.indexOf(normalized);
           showNextGameScreen();
         }
 
-window.renderTopFive = function(guesses, showMissing = false) {
+window.renderTopFive = function(guesses, showMissing = false, revealFirstLetter = false) {
   const grid = document.getElementById("topFiveGrid");
   grid.innerHTML = "";
   for (let i = 0; i < 5; i++) {
@@ -262,6 +267,10 @@ window.renderTopFive = function(guesses, showMissing = false) {
       ans.textContent = correctAnswer;
       ans.style.color = "red";
       ans.style.fontWeight = "bold";
+    } else if (revealFirstLetter) {
+      ans.textContent = correctAnswer.charAt(0) + ' _ _ _';
+      ans.style.color = "#888";
+      ans.style.fontStyle = "italic";
     } else {
       ans.textContent = "_____";
     }
