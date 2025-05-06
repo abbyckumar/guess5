@@ -196,14 +196,14 @@ prompt.answers.forEach(a => {
               timeLeft--;
               document.getElementById("timer").innerText = timeLeft + "s";
 
-          if (timeLeft === 30) {
-            for (let i = 0; i < 5; i++) {
-            if (!correctGuesses[i]) {
-            revealFirstLetterHints[i] = true;
-           }
-           }
-          renderTopFive(correctGuesses, false, true);
-          }
+if (timeLeft === 30) {
+  for (let i = 0; i < 5; i++) {
+    if (!correctGuesses[i]) {
+      revealFirstLetterHints[i] = true;
+    }
+  }
+  renderTopFive(correctGuesses);
+}
 
           if (timeLeft <= 0) {
            clearInterval(timer);
