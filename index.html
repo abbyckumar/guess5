@@ -134,10 +134,10 @@
       .then(res => res.json())
       .then(bank => {
         questionBank = bank;
-        const lastIndex = parseInt(localStorage.getItem("guess5LastIndex")) || 0;
-        const newIndex = (lastIndex + 1) % questionBank.length;
-        localStorage.setItem("guess5LastIndex", newIndex);
-        prompt = questionBank[newIndex];
+        const today = new Date();
+        const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / 86400000);
+        const questionIndex = dayOfYear % questionBank.length;
+        prompt = questionBank[questionIndex];
         document.getElementById("question").innerText = prompt.question;
         initGame();
       });
