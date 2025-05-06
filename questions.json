@@ -3,8 +3,8 @@
   {
     "question": "Top 5 most populated countries",
     "answers": [
-      { "canonical": "China", "aliases": [] },
       { "canonical": "India", "aliases": [] },
+      { "canonical": "China", "aliases": [] },
       { "canonical": "USA", "aliases": ["United States", "America", "U.S.A."] },
       { "canonical": "Indonesia", "aliases": [] },
       { "canonical": "Pakistan", "aliases": [] }
