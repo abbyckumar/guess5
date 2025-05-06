@@ -124,6 +124,7 @@
     let prompt;
     let startTime, endTime;
     let guessCount = 0;
+    let revealFirstLetterHints = [false, false, false, false, false];
 
     fetch('questions.json')
       .then(res => res.json())
@@ -196,8 +197,13 @@ prompt.answers.forEach(a => {
               document.getElementById("timer").innerText = timeLeft + "s";
 
           if (timeLeft === 30) {
-            renderTopFive(correctGuesses, false, true); // show hints
+            for (let i = 0; i < 5; i++) {
+            if (!correctGuesses[i]) {
+            revealFirstLetterHints[i] = true;
            }
+           }
+          renderTopFive(correctGuesses, false, true);
+          }
 
           if (timeLeft <= 0) {
            clearInterval(timer);
@@ -249,7 +255,8 @@ const index = canonicalAnswers.indexOf(normalized);
         document.querySelectorAll("#streak").forEach(el => el.innerText = streak);
           showNextGameScreen();
         }
-
+//window rendering of the top five
+        
 window.renderTopFive = function(guesses, showMissing = false, revealFirstLetter = false) {
   const grid = document.getElementById("topFiveGrid");
   grid.innerHTML = "";
@@ -267,13 +274,11 @@ window.renderTopFive = function(guesses, showMissing = false, revealFirstLetter 
       ans.textContent = correctAnswer;
       ans.style.color = "red";
       ans.style.fontWeight = "bold";
-    } else if (revealFirstLetter) {
-  const correctAnswer = prompt.answers[i].canonical || prompt.answers[i];
-  ans.textContent = correctAnswer.charAt(0) + ' _ _ _';
-  ans.style.color = "#888";
-  ans.style.fontStyle = "italic";
-    } 
-    else {
+    } else if (revealFirstLetterHints[i]) {
+      ans.textContent = correctAnswer.charAt(0) + ' _ _ _';
+      ans.style.color = "#888";
+      ans.style.fontStyle = "italic";
+    } else {
       ans.textContent = "_____";
     }
 
@@ -281,7 +286,6 @@ window.renderTopFive = function(guesses, showMissing = false, revealFirstLetter 
     grid.appendChild(ans);
   }
 }
-
       }
     }
 
