@@ -117,6 +117,7 @@
   <p class="timer">Time Left: <span id="timer">--</span></p>
 <div id="hintButton" style="display:none; text-align:center; margin-top: 10px;">
   <button onclick="useHint()" style="padding:8px 12px; font-size:1rem; background-color: #ff9800; color: white; border: none; border-radius: 5px; cursor: pointer;">Reveal Hints</button>
+  <p id="hintMessage" style="font-size: 0.9rem; color: #c62828; margin-top: 8px; display: none;">Using hints will stop your streak from increasing</p>
 </div>
   <div class="top-five" id="topFiveGrid"></div>
   <div class="results" id="results"></div>
@@ -194,23 +195,55 @@ prompt.answers.forEach(a => {
         });
 
         window.submitGuess = function() {
-          const guess = document.getElementById("guessInput").value.trim();
-          document.getElementById("guessInput").value = "";
-          if (!guess) return;
+  const guess = document.getElementById("guessInput").value.trim();
+  document.getElementById("guessInput").value = "";
+  if (!guess) return;
 
-          if (!timerStarted) {
-            timerStarted = true;
-            startTime = Date.now();
-            timer = setInterval(() => {
-              timeLeft--;
-              document.getElementById("timer").innerText = timeLeft + "s";
+  if (!timerStarted) {
+    timerStarted = true;
+    startTime = Date.now();
+    timer = setInterval(() => {
+      timeLeft--;
+      document.getElementById("timer").innerText = timeLeft + "s";
 
-if (timeLeft === 30) {
-  document.getElementById("hintButton").style.display = "block";
-}
+      if (timeLeft === 30) {
+        document.getElementById("hintButton").style.display = "block";
+      }
+
+      if (timeLeft <= 0) {
+        clearInterval(timer);
+        renderTopFive(correctGuesses, true);
+        endGame(false);
+      }
+    }, 1000);
   }
+
+  guessCount++;
+  const guessKey = guess.toLowerCase();
+  const normalized = allAnswerMap[guessKey];
+  const index = canonicalAnswers.indexOf(normalized);
+
+  const result = document.createElement("p");
+  result.className = 'result-item';
+
+  if (index !== -1 && !correctGuesses[index]) {
+    correctGuesses[index] = guess;
+    result.textContent = `✅ ${guess} is #${index + 1}`;
+    result.classList.add("correct");
+  } else {
+    result.textContent = `❌ ${guess}`;
+    result.classList.add("incorrect");
+  }
+
+  document.getElementById("results").appendChild(result);
   renderTopFive(correctGuesses);
-}
+
+  if (correctGuesses.filter(Boolean).length === 5) {
+    clearInterval(timer);
+    endTime = Date.now();
+    endGame(true);
+  }
+};
 
           if (timeLeft <= 0) {
            clearInterval(timer);
@@ -347,6 +380,7 @@ window.renderTopFive = function(guesses, showMissing = false, revealFirstLetter 
   function useHint() {
   hintUsed = true;
   document.getElementById("hintButton").style.display = "none";
+  document.getElementById("hintMessage").style.display = "block";
   for (let i = 0; i < 5; i++) {
     if (!correctGuesses[i]) {
       revealFirstLetterHints[i] = true;
@@ -354,8 +388,10 @@ window.renderTopFive = function(guesses, showMissing = false, revealFirstLetter 
   }
   renderTopFive(correctGuesses);
 }
+  }
+  renderTopFive(correctGuesses);
+}
 </script>
 </body>
 </html>
-
 
