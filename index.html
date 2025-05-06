@@ -116,7 +116,7 @@
   <div id="nextGame">
   <h3 style="font-weight:normal; text-align:center;">👋 You've played today's game.</h3>
   <p style="text-align:center; font-size:1.1rem; margin-top:10px;">New Game in: <span id="countdown"></span></p>
-  <p class="streak" style="margin-top: 30px; font-weight: bold;">🔥 Your Streak: <span id="streak">0</span></p>
+  <p class="streak" style="margin-top: 30px; font-weight: bold;">🔥 Your Streak: <span id="streakEnd">0</span></p>
 </div>
 
   <script>
@@ -142,6 +142,8 @@
       const storedDate = localStorage.getItem("guess5Date");
       let streak = parseInt(localStorage.getItem("guess5Streak") || "0");
       document.getElementById("streak").innerText = streak;
+      const streakEnd = document.getElementById("streakEnd");
+      if (streakEnd) streakEnd.innerText = streak;
 
       const correctGuesses = JSON.parse(localStorage.getItem("guess5Guesses") || "[null,null,null,null,null]");
       let timeLeft = 90;
@@ -164,7 +166,6 @@
         document.getElementById('topFiveGrid').style.display = 'grid';
         document.getElementById('results').style.display = 'block';
         document.querySelector('.timer').style.display = 'block';
-
         document.getElementById("guessInput").addEventListener("keyup", function(event) {
           if (event.key === "Enter") submitGuess();
         });
