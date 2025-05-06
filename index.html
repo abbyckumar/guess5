@@ -1,267 +1,126 @@
-<!DOCTYPE html>\
-<html lang="en">\
-<head>\
-  <meta charset="UTF-8" />\
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />\
-  <title>Guess 5 - Daily Top 5 Quiz</title>\
-  <style>\
-    body \{\
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;\
-      max-width: 700px;\
-      margin: auto;\
-      padding: 20px;\
-      background: linear-gradient(to right, #e0f7fa, #f1f8e9);\
-      color: #333;\
-    \}\
-    h1 \{\
-      text-align: center;\
-      font-size: 2.5rem;\
-      color: #333;\
-    \}\
-    .guess-box \{\
-      display: flex;\
-      gap: 10px;\
-      margin-top: 20px;\
-      justify-content: center;\
-    \}\
-    .guess-box input \{\
-      flex: 1;\
-      padding: 10px;\
-      font-size: 1rem;\
-      border: 2px solid #333;\
-      border-radius: 5px;\
-    \}\
-    .guess-box button \{\
-      padding: 10px 15px;\
-      font-size: 1rem;\
-      background-color: #607d8b;\
-      color: white;\
-      border: none;\
-      border-radius: 5px;\
-      cursor: pointer;\
-    \}\
-    .results \{\
-      margin-top: 20px;\
-      font-size: 1.1rem;\
-    \}\
-    .result-item.correct \{\
-      color: #388e3c;\
-    \}\
-    .result-item.incorrect \{\
-      color: #d32f2f;\
-    \}\
-    #shareButton \{\
-      margin-top: 20px;\
-      display: none;\
-      padding: 10px 20px;\
-      background-color: #455a64;\
-      color: white;\
-      border: none;\
-      cursor: pointer;\
-      border-radius: 5px;\
-    \}\
-    .top-five \{\
-      display: grid;\
-      grid-template-columns: 1fr 4fr;\
-      gap: 10px;\
-      margin-top: 30px;\
-      background-color: #fff;\
-      padding: 10px;\
-      border-radius: 10px;\
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);\
-    \}\
-    .top-five div \{\
-      padding: 8px;\
-      border-bottom: 1px solid #eee;\
-    \}\
-    .streak, .timer \{\
-      font-size: 1.2rem;\
-      text-align: center;\
-      margin-top: 20px;\
-    \}\
-  </style>\
-  <link rel="icon" href="favicon.ico" />
-</head>\
-<body>\
-  <h1>Guess 5</h1>\
-  <p id="question"></p>\
-  <div class="guess-box">\
-    <input type="text" id="guessInput" placeholder="Your guess..." />\
-    <button onclick="submitGuess()">Submit</button>\
-  </div>\
-  <div class="top-five" id="topFiveGrid"></div>\
-  <div class="results" id="results"></div>\
-  <p class="streak">Streak: <span id="streak">0</span></p>\
-  <p class="timer">Time Left: <span id="timer">--</span></p>\
-  <button id="shareButton" onclick="shareResult()">Share Your Score</button>\
-\
-  <audio id="correctSound" src="https://actions.google.com/sounds/v1/cartoon/pop.ogg" preload="auto"></audio>\
-  <audio id="wrongSound" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg" preload="auto"></audio>\
-  <audio id="endSound" src="https://actions.google.com/sounds/v1/alarms/digital_watch_alarm_long.ogg" preload="auto"></audio>\
-\
-  <script>\
-    const prompts = [\
-      \{\
-        question: "Top 5 most populous cities in the world",\
-        answers: ["Tokyo", "Delhi", "Shanghai", "S\'e3o Paulo", "Mexico City"]\
-      \},\
-      \{\
-        question: "Top 5 longest rivers in the world",\
-        answers: ["Nile", "Amazon", "Yangtze", "Mississippi", "Yenisei"]\
-      \},\
-      \{\
-        question: "Top 5 countries by land area",\
-        answers: ["Russia", "Canada", "China", "United States", "Brazil"]\
-      \}\
-    ];\
-\
-    const today = new Date();\
-    const dayIndex = today.getDate() % prompts.length;\
-    const todayString = today.toDateString();\
-    const prompt = prompts[dayIndex];\
-\
-    function normalize(str) \{\
-      return str.normalize("NFD").replace(/\\p\{Diacritic\}/gu, "").toLowerCase();\
-    \}\
-\
-    let correctGuesses = Array(5).fill(null);\
-    let guessCount = 0;\
-    const maxGuesses = 10;\
-    let timerStarted = false;\
-    let countdown;\
-    let timeLeft = 90;\
-\
-    let storedDate = localStorage.getItem("factleDate");\
-    let streak = parseInt(localStorage.getItem("factleStreak")) || 0;\
-    document.getElementById("streak").innerText = streak;\
-\
-    if (storedDate === todayString) \{\
-      endGame("You've already played today's Guess 5! Come back tomorrow.");\
-    \}\
-\
-    document.getElementById("question").innerText = prompt.question;\
-    renderTopFive();\
-\
-    function startTimer() \{\
-      document.getElementById("timer").innerText = timeLeft + 's';\
-      countdown = setInterval(() => \{\
-        timeLeft--;\
-        document.getElementById("timer").innerText = timeLeft + 's';\
-        if (timeLeft <= 0) \{\
-          clearInterval(countdown);\
-          streak = 0;\
-          localStorage.setItem("factleStreak", streak);\
-          localStorage.setItem("factleDate", todayString);\
-          document.getElementById("streak").innerText = streak;\
-          document.getElementById("endSound").play();\
-          endGame("
-\f1 \uc0\u9201 
-\f0  Time's up! Streak reset.");\
-        \}\
-      \}, 1000);\
-    \}\
-\
-    function submitGuess() \{\
-      if (localStorage.getItem("factleDate") === todayString) \{\
-        alert("You've already played today! Come back tomorrow.");\
-        return;\
-      \}\
-\
-      if (!timerStarted) \{\
-        startTimer();\
-        timerStarted = true;\
-      \}\
-\
-      const input = document.getElementById("guessInput");\
-      const guess = input.value.trim();\
-      input.value = "";\
-      if (!guess) return;\
-\
-      guessCount++;\
-\
-      const resultEl = document.createElement("p");\
-      resultEl.classList.add("result-item");\
-\
-      const index = prompt.answers.findIndex(\
-        (ans) => normalize(ans) === normalize(guess)\
-      );\
-\
-      if (index !== -1 && !correctGuesses.includes(normalize(guess))) \{\
-        correctGuesses[index] = normalize(guess);\
-        resultEl.textContent = `
-\f2 \uc0\u9989 
-\f0  $\{prompt.answers[index]\} is #$\{index + 1\}`;\
-        resultEl.classList.add("correct");\
-        document.getElementById("correctSound").play();\
-      \} else \{\
-        resultEl.textContent = `
-\f2 \uc0\u10060 
-\f0  $\{guess\}`;\
-        resultEl.classList.add("incorrect");\
-        document.getElementById("wrongSound").play();\
-      \}\
-\
-      document.getElementById("results").appendChild(resultEl);\
-      renderTopFive();\
-\
-      if (correctGuesses.filter(Boolean).length === 5) \{\
-        clearInterval(countdown);\
-        streak++;\
-        localStorage.setItem("factleStreak", streak);\
-        localStorage.setItem("factleDate", todayString);\
-        document.getElementById("streak").innerText = streak;\
-        document.getElementById("endSound").play();\
-        endGame("
-\f2 \uc0\u55356 \u57225 
-\f0  You found all 5! Streak +1");\
-      \}\
-    \}\
-\
-    function renderTopFive() \{\
-      const grid = document.getElementById("topFiveGrid");\
-      grid.innerHTML = "";\
-      for (let i = 0; i < 5; i++) \{\
-        const number = document.createElement("div");\
-        number.textContent = `#$\{i + 1\}`;\
-        const answer = document.createElement("div");\
-        answer.textContent = correctGuesses[i] ? prompt.answers[i] : "_____";\
-        grid.appendChild(number);\
-        grid.appendChild(answer);\
-      \}\
-    \}\
-\
-    function endGame(message) \{\
-      alert(message);\
-      document.getElementById("shareButton").style.display = "inline-block";\
-      document.getElementById("guessInput").disabled = true;\
-    \}\
-\
-    function shareResult() \{\
-      const filled = correctGuesses.filter(Boolean).length;\
-      const shareText = `
-\f2 \uc0\u55357 \u56522 
-\f0  I played Guess 5!\\nToday's quiz: $\{prompt.question\}\\nCorrect answers: $\{filled\}/5\\nStreak: $\{streak\} 
-\f2 \uc0\u55357 \u56613 
-\f0 \\nPlay: [your-site-url]`;\
-\
-      if (navigator.share) \{\
-        navigator.share(\{\
-          title: "I played Guess 5!",\
-          text: shareText,\
-          url: window.location.href\
-        \});\
-      \} else \{\
-        navigator.clipboard.writeText(shareText);\
-        alert("Result copied to clipboard! Share it with friends!");\
-      \}\
-    \}\
-\
-    // Enter key submits the guess\
-    document.getElementById("guessInput").addEventListener("keyup", function(event) \{\
-      if (event.key === "Enter") \{\
-        submitGuess();\
-      \}\
-    \});\
-  </script>\
-</body>\
-</html>}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Guess 5 - Daily Top 5 Quiz</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      max-width: 700px;
+      margin: auto;
+      padding: 20px;
+      background: linear-gradient(to right, #e0f7fa, #f1f8e9);
+      color: #333;
+      overflow-x: hidden;
+    }
+    h1 {
+      text-align: center;
+      font-size: 2.5rem;
+      color: #333;
+    }
+    .guess-box, .top-five, .results, .timer, #shareButton {
+      display: none;
+    }
+    .streak {
+      font-size: 1.2rem;
+      text-align: center;
+      margin-top: 20px;
+    }
+    #nextGame {
+      display: none;
+      padding: 20px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    #nextGame button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #455a64;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    .confetti-piece {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      background-color: #f50057;
+      animation: fall 2s ease-in-out forwards;
+    }
+    @keyframes fall {
+      0% {
+        transform: translateY(-50px) rotate(0);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Guess 5</h1>
+  <div id="nextGame">
+    <p>✅ You've played today's game. Come back tomorrow!</p>
+    <p>Next game in: <span id="countdown"></span></p>
+    <button onclick="shareResult()">Share Your Score</button>
+  </div>
+
+  <script>
+    const now = new Date();
+    const tomorrow = new Date();
+    tomorrow.setDate(now.getDate() + 1);
+    tomorrow.setHours(0, 0, 0, 0);
+
+    function updateCountdown() {
+      const diff = tomorrow - new Date();
+      const hours = Math.floor(diff / 1000 / 60 / 60);
+      const minutes = Math.floor((diff / 1000 / 60) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
+      document.getElementById("countdown").innerText = `${hours}h ${minutes}m ${seconds}s`;
+    }
+
+    function launchConfetti() {
+      for (let i = 0; i < 100; i++) {
+        const confetti = document.createElement("div");
+        confetti.className = "confetti-piece";
+        confetti.style.left = Math.random() * 100 + "vw";
+        confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 70%, 60%)`;
+        confetti.style.animationDuration = 1 + Math.random() * 2 + "s";
+        document.body.appendChild(confetti);
+        setTimeout(() => confetti.remove(), 3000);
+      }
+    }
+
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+    // document.getElementById("nextGame").style.display = "block";
+    // launchConfetti(); // Moved to trigger only on successful game completion
+
+    function shareResult() {
+      const shareText = `📊 I played Guess 5!\nI completed today’s game! 🔥\nPlay: [your-site-url]`;
+      if (navigator.share) {
+        navigator.share({
+          title: "I played Guess 5!",
+          text: shareText,
+          url: window.location.href
+        });
+      } else {
+        navigator.clipboard.writeText(shareText);
+        alert("Result copied to clipboard! Share it with friends!");
+      }
+    }
+  function showNextGameScreen(completed) {
+  document.getElementById("nextGame").style.display = "block";
+  if (completed) launchConfetti();
+}
+
+showNextGameScreen(true);
+</script>
+</body>
+</html>
