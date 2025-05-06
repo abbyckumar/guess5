@@ -222,7 +222,7 @@
             streak = 0;
             localStorage.setItem("guess5Streak", "0");
           }
-          document.getElementById("streak").innerText = streak;
+        document.querySelectorAll("#streak").forEach(el => el.innerText = streak);
           showNextGameScreen();
         }
 
