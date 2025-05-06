@@ -119,100 +119,120 @@
   </div>
 
   <script>
-    const prompt = {
-      question: "Top 5 most populated countries",
-      answers: ["China", "India", "USA", "Indonesia", "Pakistan"]
-    };
+    let questionBank = [];
+    let prompt;
+    let startTime, endTime;
+    let guessCount = 0;
 
-    document.getElementById("question").innerText = prompt.question;
+    fetch('questions.json')
+      .then(res => res.json())
+      .then(bank => {
+        questionBank = bank;
+        const lastIndex = parseInt(localStorage.getItem("guess5LastIndex")) || 0;
+        const newIndex = (lastIndex + 1) % questionBank.length;
+        localStorage.setItem("guess5LastIndex", newIndex);
+        prompt = questionBank[newIndex];
+        document.getElementById("question").innerText = prompt.question;
+        initGame();
+      });
 
-    const today = new Date().toDateString();
-    const storedDate = localStorage.getItem("guess5Date");
-    let streak = parseInt(localStorage.getItem("guess5Streak") || "0");
-    document.getElementById("streak").innerText = streak;
-
-    const correctGuesses = JSON.parse(localStorage.getItem("guess5Guesses") || "[null,null,null,null,null]");
-    let timeLeft = 90;
-    let timerStarted = false;
-    let timer;
-
-    if (storedDate === today) {
-      renderTopFive();
-      document.getElementById("guessBox").style.display = 'none';
-      document.getElementById('topFiveGrid').style.display = 'grid';
-      document.getElementById('results').style.display = 'none';
-      document.querySelector('.timer').style.display = 'none';
-      document.getElementById("nextGame").style.display = "block";
-    } else {
-      document.querySelector('.guess-box').style.display = 'flex';
-      document.getElementById('topFiveGrid').style.display = 'grid';
-      document.getElementById('results').style.display = 'block';
-      document.querySelector('.timer').style.display = 'block';
-    }
-
-    function submitGuess() {
-      const guess = document.getElementById("guessInput").value.trim();
-      document.getElementById("guessInput").value = "";
-      if (!guess) return;
-
-      if (!timerStarted) {
-        timerStarted = true;
-        timer = setInterval(() => {
-          timeLeft--;
-          document.getElementById("timer").innerText = timeLeft + "s";
-          if (timeLeft <= 0) {
-            clearInterval(timer);
-            endGame(false);
-          }
-        }, 1000);
-      }
-
-      const index = prompt.answers.findIndex(a => a.toLowerCase() === guess.toLowerCase());
-      const result = document.createElement("p");
-      result.className = 'result-item';
-      if (index !== -1 && !correctGuesses[index]) {
-        correctGuesses[index] = guess;
-        result.textContent = `✅ ${guess} is #${index + 1}`;
-        result.classList.add("correct");
-      } else {
-        result.textContent = `❌ ${guess}`;
-        result.classList.add("incorrect");
-      }
-      document.getElementById("results").appendChild(result);
-
-      renderTopFive();
-
-      if (correctGuesses.filter(Boolean).length === 5) {
-        clearInterval(timer);
-        endGame(true);
-      }
-    }
-
-    function endGame(completed) {
-      localStorage.setItem("guess5Guesses", JSON.stringify(correctGuesses));
-      localStorage.setItem("guess5Date", today);
-      if (completed) {
-        streak++;
-        localStorage.setItem("guess5Streak", streak);
-        launchConfetti();
-      } else {
-        streak = 0;
-        localStorage.setItem("guess5Streak", "0");
-      }
+    function initGame() {
+      const today = new Date().toDateString();
+      const storedDate = localStorage.getItem("guess5Date");
+      let streak = parseInt(localStorage.getItem("guess5Streak") || "0");
       document.getElementById("streak").innerText = streak;
-      showNextGameScreen();
-    }
 
-    function renderTopFive() {
-      const grid = document.getElementById("topFiveGrid");
-      grid.innerHTML = "";
-      for (let i = 0; i < 5; i++) {
-        const num = document.createElement("div");
-        num.textContent = `#${i + 1}`;
-        const ans = document.createElement("div");
-        ans.textContent = correctGuesses[i] || "_____";
-        grid.appendChild(num);
-        grid.appendChild(ans);
+      const correctGuesses = JSON.parse(localStorage.getItem("guess5Guesses") || "[null,null,null,null,null]");
+      let timeLeft = 90;
+      let timerStarted = false;
+      let timer;
+
+      if (storedDate === today) {
+        renderTopFive(correctGuesses);
+        document.getElementById("guessBox").style.display = 'none';
+        document.getElementById('topFiveGrid').style.display = 'grid';
+        document.getElementById('results').style.display = 'none';
+        document.querySelector('.timer').style.display = 'none';
+        document.getElementById("nextGame").style.display = "block";
+      } else {
+        document.querySelector('.guess-box').style.display = 'flex';
+        document.getElementById('topFiveGrid').style.display = 'grid';
+        document.getElementById('results').style.display = 'block';
+        document.querySelector('.timer').style.display = 'block';
+
+        document.getElementById("guessInput").addEventListener("keyup", function(event) {
+          if (event.key === "Enter") submitGuess();
+        });
+
+        window.submitGuess = function() {
+          const guess = document.getElementById("guessInput").value.trim();
+          document.getElementById("guessInput").value = "";
+          if (!guess) return;
+
+          if (!timerStarted) {
+            timerStarted = true;
+            startTime = Date.now();
+            timer = setInterval(() => {
+              timeLeft--;
+              document.getElementById("timer").innerText = timeLeft + "s";
+              if (timeLeft <= 0) {
+                clearInterval(timer);
+                endGame(false);
+              }
+            }, 1000);
+          }
+
+          guessCount++;
+
+          const index = prompt.answers.findIndex(a => a.toLowerCase() === guess.toLowerCase());
+          const result = document.createElement("p");
+          result.className = 'result-item';
+          if (index !== -1 && !correctGuesses[index]) {
+            correctGuesses[index] = guess;
+            result.textContent = `✅ ${guess} is #${index + 1}`;
+            result.classList.add("correct");
+          } else {
+            result.textContent = `❌ ${guess}`;
+            result.classList.add("incorrect");
+          }
+          document.getElementById("results").appendChild(result);
+
+          renderTopFive(correctGuesses);
+
+          if (correctGuesses.filter(Boolean).length === 5) {
+            clearInterval(timer);
+            endTime = Date.now();
+            endGame(true);
+          }
+        }
+
+        window.endGame = function(completed) {
+          localStorage.setItem("guess5Guesses", JSON.stringify(correctGuesses));
+          localStorage.setItem("guess5Date", today);
+          if (completed) {
+            streak++;
+            localStorage.setItem("guess5Streak", streak);
+            launchConfetti();
+          } else {
+            streak = 0;
+            localStorage.setItem("guess5Streak", "0");
+          }
+          document.getElementById("streak").innerText = streak;
+          showNextGameScreen();
+        }
+
+        window.renderTopFive = function(guesses) {
+          const grid = document.getElementById("topFiveGrid");
+          grid.innerHTML = "";
+          for (let i = 0; i < 5; i++) {
+            const num = document.createElement("div");
+            num.textContent = `#${i + 1}`;
+            const ans = document.createElement("div");
+            ans.textContent = guesses[i] || "_____";
+            grid.appendChild(num);
+            grid.appendChild(ans);
+          }
+        }
       }
     }
 
@@ -250,7 +270,8 @@
     }
 
     function shareResult() {
-      const shareText = `📊 I played Guess 5!\nI completed today’s game! 🔥\nPlay: [your-site-url]`;
+      const totalTime = Math.round((endTime - startTime) / 1000) || 'N/A';
+      const shareText = `📊 I played Guess 5!\n${prompt.question}\n⏱ Time: ${totalTime}s\n🔢 Guesses: ${guessCount}\n🔥 Streak: ${localStorage.getItem("guess5Streak") || 0}\nPlay: [your-site-url]`;
       if (navigator.share) {
         navigator.share({
           title: "I played Guess 5!",
@@ -262,11 +283,6 @@
         alert("Result copied to clipboard! Share it with friends!");
       }
     }
-
-    document.getElementById("guessInput")?.addEventListener("keyup", function(event) {
-      if (event.key === "Enter") submitGuess();
-    });
   </script>
 </body>
 </html>
-
