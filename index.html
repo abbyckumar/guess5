@@ -196,6 +196,7 @@ prompt.answers.forEach(a => {
               document.getElementById("timer").innerText = timeLeft + "s";
               if (timeLeft <= 0) {
                 clearInterval(timer);
+                renderTopFive(correctGuesses, true);
                 endGame(false);
               }
             }, 1000);
@@ -244,18 +245,29 @@ const index = canonicalAnswers.indexOf(normalized);
           showNextGameScreen();
         }
 
-        window.renderTopFive = function(guesses) {
-          const grid = document.getElementById("topFiveGrid");
-          grid.innerHTML = "";
-          for (let i = 0; i < 5; i++) {
-            const num = document.createElement("div");
-            num.textContent = `#${i + 1}`;
-            const ans = document.createElement("div");
-            ans.textContent = guesses[i] || "_____";
-            grid.appendChild(num);
-            grid.appendChild(ans);
-          }
-        }
+window.renderTopFive = function(guesses, showMissing = false) {
+  const grid = document.getElementById("topFiveGrid");
+  grid.innerHTML = "";
+  for (let i = 0; i < 5; i++) {
+    const num = document.createElement("div");
+    num.textContent = `#${i + 1}`;
+    
+    const ans = document.createElement("div");
+    if (guesses[i]) {
+      ans.textContent = guesses[i];
+    } else if (showMissing) {
+      ans.textContent = prompt.answers[i].canonical || prompt.answers[i];  // support alias/canonical
+      ans.style.color = "red";
+      ans.style.fontWeight = "bold";
+    } else {
+      ans.textContent = "_____";
+    }
+
+    grid.appendChild(num);
+    grid.appendChild(ans);
+  }
+}
+
       }
     }
 
