@@ -1,7 +1,7 @@
 
 [
   {
-    "question": "TOP 5 MOST POPULATED COUNTRIES",
+    "question": "TOP 5 most populated countries",
     "answers": [
       { "canonical": "India", "aliases": [] },
       { "canonical": "China", "aliases": [] },
