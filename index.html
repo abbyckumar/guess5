@@ -12,18 +12,55 @@
       padding: 20px;
       background: linear-gradient(to right, #e0f7fa, #f1f8e9);
       color: #333;
-      overflow-x: hidden;
     }
     h1 {
       text-align: center;
       font-size: 2.5rem;
       color: #333;
     }
-    .guess-box, .top-five, .results, .timer, #shareButton {
-      display: none;
-    }
-    .streak {
+    #question {
       font-size: 1.2rem;
+      margin-top: 20px;
+      text-align: center;
+    }
+    .guess-box {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    .guess-box input {
+      flex: 1;
+      padding: 10px;
+      font-size: 1rem;
+    }
+    .guess-box button {
+      padding: 10px 15px;
+      background-color: #455a64;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .top-five {
+      display: grid;
+      grid-template-columns: 1fr 4fr;
+      gap: 10px;
+      background: white;
+      padding: 15px;
+      margin-top: 20px;
+      border-radius: 8px;
+    }
+    .results {
+      margin-top: 20px;
+    }
+    .result-item.correct {
+      color: green;
+    }
+    .result-item.incorrect {
+      color: red;
+    }
+    .streak, .timer {
       text-align: center;
       margin-top: 20px;
     }
@@ -34,6 +71,7 @@
       border-radius: 10px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
       text-align: center;
+      margin-top: 40px;
     }
     #nextGame button {
       margin-top: 20px;
@@ -65,6 +103,15 @@
 </head>
 <body>
   <h1>Guess 5</h1>
+  <p id="question"></p>
+  <div class="guess-box" id="guessBox">
+    <input type="text" id="guessInput" placeholder="Your guess..." />
+    <button onclick="submitGuess()">Submit</button>
+  </div>
+  <div class="top-five" id="topFiveGrid"></div>
+  <div class="results" id="results"></div>
+  <p class="streak">Streak: <span id="streak">0</span></p>
+  <p class="timer">Time Left: <span id="timer">--</span></p>
   <div id="nextGame">
     <p>✅ You've played today's game. Come back tomorrow!</p>
     <p>Next game in: <span id="countdown"></span></p>
@@ -72,18 +119,117 @@
   </div>
 
   <script>
-    const now = new Date();
-    const tomorrow = new Date();
-    tomorrow.setDate(now.getDate() + 1);
-    tomorrow.setHours(0, 0, 0, 0);
+    const prompt = {
+      question: "Top 5 most populated countries",
+      answers: ["China", "India", "USA", "Indonesia", "Pakistan"]
+    };
+
+    document.getElementById("question").innerText = prompt.question;
+
+    const today = new Date().toDateString();
+    const storedDate = localStorage.getItem("guess5Date");
+    let streak = parseInt(localStorage.getItem("guess5Streak") || "0");
+    document.getElementById("streak").innerText = streak;
+
+    const correctGuesses = JSON.parse(localStorage.getItem("guess5Guesses") || "[null,null,null,null,null]");
+    let timeLeft = 90;
+    let timerStarted = false;
+    let timer;
+
+    if (storedDate === today) {
+      renderTopFive();
+      document.getElementById("guessBox").style.display = 'none';
+      document.getElementById('topFiveGrid').style.display = 'grid';
+      document.getElementById('results').style.display = 'none';
+      document.querySelector('.timer').style.display = 'none';
+      document.getElementById("nextGame").style.display = "block";
+    } else {
+      document.querySelector('.guess-box').style.display = 'flex';
+      document.getElementById('topFiveGrid').style.display = 'grid';
+      document.getElementById('results').style.display = 'block';
+      document.querySelector('.timer').style.display = 'block';
+    }
+
+    function submitGuess() {
+      const guess = document.getElementById("guessInput").value.trim();
+      document.getElementById("guessInput").value = "";
+      if (!guess) return;
+
+      if (!timerStarted) {
+        timerStarted = true;
+        timer = setInterval(() => {
+          timeLeft--;
+          document.getElementById("timer").innerText = timeLeft + "s";
+          if (timeLeft <= 0) {
+            clearInterval(timer);
+            endGame(false);
+          }
+        }, 1000);
+      }
+
+      const index = prompt.answers.findIndex(a => a.toLowerCase() === guess.toLowerCase());
+      const result = document.createElement("p");
+      result.className = 'result-item';
+      if (index !== -1 && !correctGuesses[index]) {
+        correctGuesses[index] = guess;
+        result.textContent = `✅ ${guess} is #${index + 1}`;
+        result.classList.add("correct");
+      } else {
+        result.textContent = `❌ ${guess}`;
+        result.classList.add("incorrect");
+      }
+      document.getElementById("results").appendChild(result);
+
+      renderTopFive();
+
+      if (correctGuesses.filter(Boolean).length === 5) {
+        clearInterval(timer);
+        endGame(true);
+      }
+    }
+
+    function endGame(completed) {
+      localStorage.setItem("guess5Guesses", JSON.stringify(correctGuesses));
+      localStorage.setItem("guess5Date", today);
+      if (completed) {
+        streak++;
+        localStorage.setItem("guess5Streak", streak);
+        launchConfetti();
+      } else {
+        streak = 0;
+        localStorage.setItem("guess5Streak", "0");
+      }
+      document.getElementById("streak").innerText = streak;
+      showNextGameScreen();
+    }
+
+    function renderTopFive() {
+      const grid = document.getElementById("topFiveGrid");
+      grid.innerHTML = "";
+      for (let i = 0; i < 5; i++) {
+        const num = document.createElement("div");
+        num.textContent = `#${i + 1}`;
+        const ans = document.createElement("div");
+        ans.textContent = correctGuesses[i] || "_____";
+        grid.appendChild(num);
+        grid.appendChild(ans);
+      }
+    }
 
     function updateCountdown() {
-      const diff = tomorrow - new Date();
-      const hours = Math.floor(diff / 1000 / 60 / 60);
-      const minutes = Math.floor((diff / 1000 / 60) % 60);
-      const seconds = Math.floor((diff / 1000) % 60);
-      document.getElementById("countdown").innerText = `${hours}h ${minutes}m ${seconds}s`;
+      const now = new Date();
+      const tomorrow = new Date();
+      tomorrow.setDate(now.getDate() + 1);
+      tomorrow.setHours(0, 0, 0, 0);
+      const diff = tomorrow - now;
+      const h = Math.floor(diff / 1000 / 60 / 60);
+      const m = Math.floor((diff / 1000 / 60) % 60);
+      const s = Math.floor((diff / 1000) % 60);
+      document.getElementById("countdown").innerText = `${h}h ${m}m ${s}s`;
     }
+
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
 
     function launchConfetti() {
       for (let i = 0; i < 100; i++) {
@@ -97,10 +243,11 @@
       }
     }
 
-    setInterval(updateCountdown, 1000);
-    updateCountdown();
-    // document.getElementById("nextGame").style.display = "block";
-    // launchConfetti(); // Moved to trigger only on successful game completion
+    function showNextGameScreen() {
+      document.getElementById("nextGame").style.display = "block";
+      document.getElementById("guessBox").style.display = 'none';
+      document.querySelector('.timer').style.display = 'none';
+    }
 
     function shareResult() {
       const shareText = `📊 I played Guess 5!\nI completed today’s game! 🔥\nPlay: [your-site-url]`;
@@ -115,12 +262,11 @@
         alert("Result copied to clipboard! Share it with friends!");
       }
     }
-  function showNextGameScreen(completed) {
-  document.getElementById("nextGame").style.display = "block";
-  if (completed) launchConfetti();
-}
 
-// showNextGameScreen(true); // Only call this after successful game completion
-</script>
+    document.getElementById("guessInput")?.addEventListener("keyup", function(event) {
+      if (event.key === "Enter") submitGuess();
+    });
+  </script>
 </body>
 </html>
+
