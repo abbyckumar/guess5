@@ -1,33 +1,165 @@
-
 [
+  {
+  "question": "Top 5 highest-grossing hollywood movies of all time",
+  "answers": [
+    {
+      "canonical": "Avatar",
+      "aliases": ["avatar"],
+      "hint": "Man joins blue aliens to save their tree."
+    },
+    {
+      "canonical": "Avengers: Endgame",
+      "aliases": ["avengers endgame", "endgame", "end game", "avengers - endgame", "avengers end game", "avengers - end game", "avengers: end game"],
+      "hint": "Everyone returns. Except Tony. Oops."
+    },
+    {
+      "canonical": "Avatar: The Way of Water",
+      "aliases": ["avatar the way of water", "avatar way of water", "way of water", "the way of the water", "avatar - the way of the water", "avatar 2"],
+      "hint": "Blue Alien man from answer #1 moves to ocean."
+    },
+    {
+      "canonical": "Titanic",
+      "aliases": ["titanic", "the titanic"],
+      "hint": "I'll never let go, Jack... proceeds to let go."
+    },
+    {
+      "canonical": "Star Wars: The Force Awakens",
+      "aliases": ["the force awakens", "star wars the force awakens", "star wars episode 7", "star wars - the force awakens","star wars: the force awakens", "Star Wars: Episode VII - The Force Awakens", "Star Wars: Episode VII", "Star Wars: Episode 7", "Star Wars - Episode VII", "Star Wars - Episode 7" ],
+      "hint": "New girl finds old lightsaber, instantly better than everyone."
+    }
+  ]
+  },
+
   {
     "question": "TOP 5 most populated countries",
     "answers": [
-      { "canonical": "India", "aliases": [] },
-      { "canonical": "China", "aliases": [] },
-      { "canonical": "USA", "aliases": ["United States", "America", "U.S.A.","United States of America"] },
-      { "canonical": "Indonesia", "aliases": [] },
-      { "canonical": "Pakistan", "aliases": [] }
+      { "canonical": "India", 
+        "aliases": [], 
+        "hint": "Always fighting with #5" 
+      },
+      { "canonical": "China", 
+        "aliases": [], 
+        "hint": "Apparently use 45 billion chopsticks annually" 
+      },
+      { "canonical": "USA", 
+        "aliases": ["United States", "America", "U.S.A.","United States of America"],
+        "hint": "They really like guns. Like really."
+      },
+      { "canonical": "Indonesia",  
+        "aliases": [],
+        "hint": "Over 17000 islands. Bali is one 💘" 
+      },
+      { "canonical": "Pakistan",  
+        "aliases": [],
+        "hint": "Always fighting with #1" 
+      }
     ]
   },
+
   {
   "question": "Top 5 most-streamed artists on Spotify in 2024",
   "answers": [
-    { "canonical": "Taylor Swift", "aliases": [] },
-    { "canonical": "Bad Bunny", "aliases": [] },
-    { "canonical": "The Weeknd", "aliases": [] },
-    { "canonical": "Drake", "aliases": [] },
-    { "canonical": "Billie Eilish", "aliases": [] }
+    { "canonical": "Taylor Swift",  
+        "aliases": [],
+        "hint": "Can't Shake off the top spot" 
+      },
+    { "canonical": "Bad Bunny",  
+        "aliases": [],
+        "hint": "Our Puerto Rican ain't no Moscow Mule" 
+      },
+    { "canonical": "The Weeknd",  
+        "aliases": ["Weeknd"],
+        "hint": "Plays in blinding lights" 
+      },
+    { "canonical": "Drake",  
+        "aliases": [],
+        "hint": "One Dance is all it takes" 
+      },
+    { "canonical": "Billie Eilish",  
+        "aliases": [],
+        "hint": "Those ocean eyes" 
+      }
   ]
   },
   {
-  "question": "Top 5 highest-grossing movies of all time",
-  "answers": [
-    { "canonical": "Avatar", "aliases": [] },
-    { "canonical": "Avengers: Endgame", "aliases": ["Endgame", "End Game"] },
-    { "canonical": "Titanic", "aliases": [] },
-    { "canonical": "Star Wars: The Force Awakens", "aliases": ["The Force Awakens"] },
-    { "canonical": "Avengers: Infinity War", "aliases": ["Infinity War"] }
-  ]
+    "question": "Top 5 longest rivers in the world",
+    "answers": [
+      { "canonical": "Nile", "aliases": [], "hint": "Not just in Egypt, but that's the famous bit." },
+      { "canonical": "Amazon", "aliases": [], "hint": "The rainforest's main squeeze." },
+      { "canonical": "Yangtze", "aliases": [], "hint": "China's lifeline and third longest." },
+      { "canonical": "Mississippi-Missouri", "aliases": ["Mississippi", "Mississippi River", "Missouri River", "Mississippi Missouri"], "hint": "USA’s muddy duo." },
+      { "canonical": "Yenisei", "aliases": ["Yenisey"], "hint": "Coldest major river. Siberian levels of chill." }
+    ]
+  },
+
+  {
+    "question": "Top 5 most followed Instagram accounts in 2024",
+    "answers": [
+      { "canonical": "Instagram", "aliases": ["@instagram"], "hint": "Meta loves itself." }
+      { "canonical": "Cristiano Ronaldo", "aliases": ["ronaldo"], "hint": "Scored on the pitch and the ‘gram." },
+      { "canonical": "Lionel Messi", "aliases": ["messi"], "hint": "Argentina’s golden boy." },
+      { "canonical": "Selena Gomez", "aliases": [], "hint": "Singer, actress, Rare Beauty boss." },
+      { "canonical": "Kylie Jenner", "aliases": [], "hint": "Lip kits and baby names." },
+    ]
+  },
+  {
+    "question": "Top 5 most spoken languages worldwide (native speakers)",
+    "answers": [
+      { "canonical": "Mandarin Chinese", "aliases": ["Chinese", "Mandarin"], "hint": "Over a billion tongues wag this." },
+      { "canonical": "Spanish", "aliases": [], "hint": "¡Hola! ¿Qué tal?" },
+      { "canonical": "English", "aliases": [], "hint": "Used everywhere, often badly." },
+      { "canonical": "Hindi", "aliases": [], "hint": "Bollywood speaks this." },
+      { "canonical": "Arabic", "aliases": [], "hint": "Script is beautiful. So are the numbers." }
+    ]
+  },
+  {
+    "question": "Top 5 most visited countries in the world from 2020-24",
+    "answers": [
+      { "canonical": "France", "aliases": [], "hint": "Cheese, wine, Eiffel. Oui oui." },
+      { "canonical": "Spain", "aliases": [], "hint": "Tapas, beaches, and flamenco." },
+      { "canonical": "United States", "aliases": ["USA", "America", "United States of America"], "hint": "National Parks to Times Square." },
+      { "canonical": "China", "aliases": [], "hint": "Wall to wall tourism." },
+      { "canonical": "Italy", "aliases": [], "hint": "Pasta, ruins, romance." }
+    ]
+  },
+  {
+    "question": "Top 5 most expensive paintings ever sold",
+    "answers": [
+      { "canonical": "Salvator Mundi", "aliases": [], "hint": "Da Vinci’s mystery man." },
+      { "canonical": "Interchange", "aliases": [], "hint": "De Kooning’s chaotic genius." },
+      { "canonical": "The Card Players", "aliases": [], "hint": "Cézanne’s poker face." },
+      { "canonical": "Nafea Faa Ipoipo", "aliases": ["When Will You Marry?"], "hint": "Gauguin’s Tahitian daydream." },
+      { "canonical": "Number 17A", "aliases": [], "hint": "Pollock just splashed and cashed." }
+    ]
+  },
+  {
+    "question": "Top 5 richest people in the world in 2024",
+    "answers": [
+      { "canonical": "Elon Musk", "aliases": [], "hint": "Rockets, Teslas, tweets." },
+      { "canonical": "Mark Zuckerberg", "aliases": [], "hint": "He has a book of faces." }
+      { "canonical": "Jeff Bezos", "aliases": [], "hint": "Bald, built Amazon, now flies to space." },
+      { "canonical": "Larry Ellison", "aliases": [], "hint": "Oracle founder and island buyer." },
+      { "canonical": "Bernard Arnault", "aliases": ["Bernard Arnault & family"], "hint": "The fashion empire boss." },
+    ]
+  },
+  {
+    "question": "Top 5 fastest animals on land",
+    "answers": [
+      { "canonical": "Cheetah", "aliases": [], "hint": "Spots and speed." },
+      { "canonical": "Pronghorn Antelope", "aliases": ["pronghorn"], "hint": "American speedster." },
+      { "canonical": "Springbok", "aliases": [], "hint": "Jumpy little South African." },
+      { "canonical": "Quarter Horse", "aliases": [], "hint": "Can beat a cheetah… over 400m." },
+      { "canonical": "Lion", "aliases": [], "hint": "The mane event." }
+    ]
+  },
+  {
+    "question": "Top 5 biggest tech companies by market cap in 2024",
+    "answers": [
+      { "canonical": "Apple", "aliases": [], "hint": "iEverything." },
+      { "canonical": "Microsoft", "aliases": [], "hint": "Windows and the Cloud King." },
+      { "canonical": "Nvidia", "aliases": [], "hint": "The love chips" },
+      { "canonical": "Alphabet", "aliases": ["Google", "Alphabet Inc."], "hint": "Knows what you searched last summer." },
+      { "canonical": "Amazon", "aliases": [], "hint": "From books to Bezos bucks." }
+    ]
   }
 ]
